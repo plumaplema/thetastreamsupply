@@ -1,56 +1,37 @@
-import {
-  Link as ChakraLink,
-  Text,
-  Code,
-  List,
-  ListIcon,
-  ListItem,
-} from '@chakra-ui/react'
-import { CheckCircleIcon, LinkIcon } from '@chakra-ui/icons'
+import { Heading, Text, Button, Stack, Image, useDisclosure } from "@chakra-ui/react";
+import logo from "../assets/logo.png"; // import your logo image
+import { useSession } from "next-auth/react"
+import ModalLoginPage from "../components/ModalLogin";
+import { useAccount } from "wagmi";
 
-import { Hero } from '../components/Hero'
-import { Container } from '../components/Container'
-import { Main } from '../components/Main'
-import { DarkModeSwitch } from '../components/DarkModeSwitch'
-import { CTA } from '../components/CTA'
-import { Footer } from '../components/Footer'
+function App() {
+    const { isOpen, onClose, onOpen } = useDisclosure()
+    const { data: session, status } = useSession()
+    const { isDisconnected } = useAccount()
 
-const Index = () => (
-  <Container height="100vh">
-    <Hero />
-    <Main>
-      <Text color="text">
-        Example repository of <Code>Next.js</Code> + <Code>chakra-ui</Code> +{' '}
-        <Code>TypeScript</Code>.
-      </Text>
+    return (
+        <Stack
+            spacing={4}
+            h={'100vh'}
+            p={4}
+            color="white"
+            textAlign="center"
+            alignItems="center"
+        >
+            <ModalLoginPage isOpen={isOpen} onClose={onClose} />
+            <Image src={logo.src} alt="ThetaStream Supply logo" h={150} />
+            <Heading color={'blackAlpha.800'} as="h1" size="3xl">
+                ThetaStream Supply
+            </Heading>
+            <Text fontSize="2xl" maxW="600px">
+                Revolutionize the way procurement is done with ThetaStream Supply. Leverage the power of Theta Network's video streaming technology to promote transparency and democracy in the procurement process.
+            </Text>
+            <Button onClick={onOpen} colorScheme="pink" padding={5} size="lg"
+                display={(status === "unauthenticated" || isDisconnected) ? 'flex' : 'none'}>
+                Join ThetaStream Supply
+            </Button>
+        </Stack >
+    );
+}
 
-      <List spacing={3} my={0} color="text">
-        <ListItem>
-          <ListIcon as={CheckCircleIcon} color="green.500" />
-          <ChakraLink
-            isExternal
-            href="https://chakra-ui.com"
-            flexGrow={1}
-            mr={2}
-          >
-            Chakra UI <LinkIcon />
-          </ChakraLink>
-        </ListItem>
-        <ListItem>
-          <ListIcon as={CheckCircleIcon} color="green.500" />
-          <ChakraLink isExternal href="https://nextjs.org" flexGrow={1} mr={2}>
-            Next.js <LinkIcon />
-          </ChakraLink>
-        </ListItem>
-      </List>
-    </Main>
-
-    <DarkModeSwitch />
-    <Footer>
-      <Text>Next ❤️ Chakra</Text>
-    </Footer>
-    <CTA />
-  </Container>
-)
-
-export default Index
+export default App;
